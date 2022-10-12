@@ -35,7 +35,6 @@ public class PasswordController {
     public ResponseEntity<?> insert(@RequestBody Password password){
         try {
             Password pass = this.passwordService.insert(password);
-//            this.passwordService.insert(password);
             return ResponseEntity.ok().body("Password cadastrada com sucesso.");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -53,9 +52,9 @@ public class PasswordController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id, @RequestBody Password password){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         try {
-            this.passwordService.delete(id, password);
+            this.passwordService.delete(id);
             return ResponseEntity.ok().body("Password deletada com sucesso.");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

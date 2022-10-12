@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class PasswordService {
@@ -39,8 +40,13 @@ public class PasswordService {
     }
 
     @Transactional
-    public void delete (Long id, Password password){
-        this.passwordRepository.delete(password);
+    public void delete (Long id){
+        Optional<Password> password = passwordRepository.findById(id);
+        if (password.isPresent()){
+            this.passwordRepository.delete(password.get());
+        } else {
+            throw new RuntimeException("Nao foi possivel deletar");
+        }
     }
 
 
