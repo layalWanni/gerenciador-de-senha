@@ -9,6 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Controller
 @CrossOrigin
@@ -26,14 +30,29 @@ public class PasswordController {
         return ResponseEntity.ok().body(this.passwordService.findById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<Page<Password>> listByAllPage (Pageable pageable){
-        return ResponseEntity.ok().body(this.passwordService.listAll(pageable));
+    public Password unencrypt(Password password){
+        byte[] decoded = Base64.getDecoder().decode(password.getSenha());
+        String decodedString = new String(decoded);
+        password.setSenha(decodedString);
+        return password;
     }
+
+    @GetMapping
+    public ResponseEntity<List<Password>> getAllRequests(){
+        return ResponseEntity.ok().body(passwordService.findAll().stream().map(this::unencrypt).collect(Collectors.toList()));
+    }
+
+//    @GetMapping
+//    public ResponseEntity<Page<Password>> listByAllPage (Pageable pageable){
+//        return ResponseEntity.ok().body(this.passwordService.listAll(pageable));
+//    }
 
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Password password){
         try {
+            String original = password.getSenha();
+            String encoded = Base64.getEncoder().encodeToString(original.getBytes());
+            password.setSenha(encoded);
             Password pass = this.passwordService.insert(password);
             return ResponseEntity.ok().body("Password cadastrada com sucesso.");
         }catch (Exception e){

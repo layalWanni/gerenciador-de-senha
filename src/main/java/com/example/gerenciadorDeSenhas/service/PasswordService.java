@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,8 +21,12 @@ public class PasswordService {
         return this.passwordRepository.findById(id).orElse(new Password());
     }
 
-    public Page<Password> listAll(Pageable pageable){
-        return this.passwordRepository.findAll(pageable);
+//    public Page<Password> listAll(Pageable pageable){
+//        return this.passwordRepository.findAll(pageable);
+//    }
+
+    public List<Password> findAll(){
+        return passwordRepository.findAll();
     }
 
     @Transactional
@@ -35,7 +40,7 @@ public class PasswordService {
             this.passwordRepository.save(password);
         }
         else{
-            throw new RuntimeException();
+            throw new RuntimeException("Nao foi possivel editar");
         }
     }
 
